@@ -1,0 +1,200 @@
+<proyecto>
+<niveles>
+2
+</niveles>
+<nivel>
+  <id>
+    1
+  </id>
+  <tiempo_juego>
+     360
+  </tiempo_juego>     
+  <jugador>
+    <disparo>
+      1.0
+    </disparo>
+    <trayectoria>
+      <velocidad>
+	1
+      </velocidad>
+      <puntos>
+	5
+      </puntos>
+      <punto>
+	<x> 20 </x> <y> 20 </y>
+      </punto>
+      <punto>
+	<x> 20 </x> <y> 40 </y>
+      </punto>
+      <punto>
+	<x> 15 </x> <y> 60 </y>
+      </punto>
+      <punto>
+	<x> 10 </x> <y> 80 </y>
+      </punto>
+      <punto>
+	<x> 10 </x> <y> 40 </y>
+      </punto>
+    </trayectoria>
+  </jugador>
+  <contrincantes>
+    2
+  </contrincantes>
+  <contrincante>
+    <disparo>
+      0.90
+    </disparo>
+    <trayectoria>
+      <velocidad>
+	0.01
+      </velocidad>
+      <puntos>
+	2
+      </puntos>
+      <punto>
+	<x> 40 </x> <y> 20 </y>
+      </punto>
+      <punto>
+	<x> 80 </x> <y> 20 </y>
+      </punto>
+    </trayectoria>
+  </contrincante>    
+  <contrincante>
+    <disparo>
+      0.95
+    </disparo>
+    <trayectoria>
+      <velocidad>
+	0.5
+      </velocidad>
+      <puntos>
+	1
+      </puntos>
+      <punto>
+	<x> 80 </x> <y> 50 </y>
+      </punto>
+    </trayectoria>
+  </contrincante>    
+  <objetos>
+    <cantidad>
+      2
+    </cantidad>
+    <objeto>
+      <maya>
+	<archivo>
+	  "~/test.ply"
+	</archivo>
+	<x>
+	  50
+	</x>
+	<y>
+	  50
+	</y>
+      </maya>
+    </objeto>
+    <objeto>
+      <cubo>
+	<x>
+	  20
+	</x>
+	<y>
+	  5
+	</y>
+	<tamano>
+	  5
+	</tamano>
+      </cubo>
+    </objeto>
+  </objetos>   
+</nivel>
+<nivel>
+  <id>
+    2
+  </id>
+  <tiempo_juego>
+     480
+  </tiempo_juego>     
+  <jugador>
+    <disparo>
+      1.5
+    </disparo>
+    <trayectoria>
+      <velocidad>
+	0.8
+      </velocidad>
+      <puntos>
+	5
+      </puntos>
+      <punto>
+	<x> 20 </x> <y> 20 </y>
+      </punto>
+      <punto>
+	<x> 20 </x> <y> 40 </y>
+      </punto>
+      <punto>
+	<x> 15 </x> <y> 60 </y>
+      </punto>
+      <punto>
+	<x> 10 </x> <y> 80 </y>
+      </punto>
+      <punto>
+	<x> 10 </x> <y> 40 </y>
+      </punto>
+    </trayectoria>
+  </jugador>
+  <contrincantes>
+    1
+  </contrincantes>
+  <contrincante>
+    <disparo>
+      0.90
+    </disparo>
+    <trayectoria>
+      <velocidad>
+	1.3
+      </velocidad>
+      <puntos>
+	2
+      </puntos>
+      <punto>
+	<x> 40 </x> <y> 20 </y>
+      </punto>
+      <punto>
+	<x> 80 </x> <y> 20 </y>
+      </punto>
+    </trayectoria>
+  </contrincante>    
+  <objetos>
+    <cantidad>
+      2
+    </cantidad>
+    <objeto>
+      <maya>
+	<archivo>
+	  "~/test2.obj"
+	</archivo>
+	<x>
+	  50
+	</x>
+	<y>
+	  50
+	</y>
+      </maya>
+    </objeto>
+    <objeto>
+      <esfera>
+	<x>
+	  20
+	</x>
+	<y>
+	  5
+	</y>
+	<radio>
+	  5
+	</radio>
+      </esfera>
+    </objeto>
+  </objetos>   
+</nivel>
+
+</proyecto>
