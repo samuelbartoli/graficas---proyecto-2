@@ -3,8 +3,12 @@
 #include <math.h>
 //#include "Trimesh.h"
 
+<<<<<<< HEAD
 //HOLAAA
 
+=======
+//algo
+>>>>>>> origin/master
 int comienzo = 0;
 int velocidad_x, velocidad_z, bar_x;
 
