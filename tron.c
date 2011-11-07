@@ -3,6 +3,7 @@
 #include <math.h>
 //#include "Trimesh.h"
 
+//HOLAAA
 
 int comienzo = 0;
 int velocidad_x, velocidad_z, bar_x;
