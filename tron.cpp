@@ -1,7 +1,7 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include <math.h>
-//#include "Trimesh.h"
+#include "Trimesh.h"
 
 int comienzo = 0;
 int velocidad_x, velocidad_z, bar_x;
@@ -110,6 +110,14 @@ int main(int argc, char* argv[]) {
     glutInitWindowPosition (400, 50);
     glutCreateWindow ("Tron");    
 	initRendering(); 
+
+    const char *filename = argv[1];
+    Trimesh *themesh = Trimesh::read(filename);
+    if(!themesh)
+        usage(argv[0]);
+    
+    
+
     glutDisplayFunc(drawScene);
 	glutKeyboardFunc(manejador_teclas);
     glutSpecialFunc(direccionales);
