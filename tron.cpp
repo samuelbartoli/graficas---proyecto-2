@@ -1,50 +1,55 @@
 #include <GL/glut.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <math.h>
-#include "Trimesh.h"
+#include "TriMesh.h"
+#include "XForm.h"
+#include <vector>
 
-int comienzo = 0;
-int velocidad_x, velocidad_z, bar_x;
+using namespace std;
+
 
 int radio = 2;
 int x = 3;
 int y = 3; 
 int z = 0 ;
 
+int rotacion_x = 0;
+int rotacion_y = 0;
+
+vector<TriMesh *> meshes;
+vector<xform> xforms;
+vector<bool> visible;
+vector<string> filenames;
+
+//rotacion_x = 0 ;
+//rotacion_y = 0;
+
 void manejador_teclas(unsigned char key, 
-					int x, int y) {   
+					int x, int y) {
 	switch (key) {
-	case 27: 
+    	case 27: 
 			exit(0); 
-            break;
-    case 32: 
-        if(!comienzo){
-//            srand48(time(NULL));
-            const float PI = acos(-1) ; 
-            float alpha = (drand48() * 10 ) + 85;
-            alpha = alpha*PI/180;
-            velocidad_x = (drand48() * 0.1) +0.1 ;
-            velocidad_x = (drand48()>0.5) ? -velocidad_x : velocidad_x;
-
-            float h = velocidad_x / cos(alpha*PI/180);
-            velocidad_z = sin(alpha)*h;
- 
-        }
-        comienzo = 1;
     }
-    glutPostRedisplay();
-}
+}   
 
-
-//mover jugador
-void direccionales(int key, int x, int y){
+//mover camara
+void move_cam(int key, int x, int y){
     switch(key) {
         case GLUT_KEY_RIGHT:
-            bar_x = (bar_x + 13 >= 50) ? 40 : bar_x + 3;
+            rotacion_y += 2 ;
             break;
         case GLUT_KEY_LEFT:
-             bar_x = (bar_x -3 <= 0) ? 0 : bar_x -3;
-    }   
+            rotacion_y -= 2;
+            break;
+        case GLUT_KEY_UP:
+            rotacion_x += 2;
+            break;
+        case GLUT_KEY_DOWN:
+            rotacion_x -= 2;
+            break;
+    }  
     glutPostRedisplay();
 
 }
@@ -74,7 +79,7 @@ void dibujar_esfera(){
     glPopMatrix();
 }
 
-//dibujar cubo
+//dibujar un cubo
 void dibujar_cubo(){
     glPushMatrix();
     glRotatef(45,0,1,0);
@@ -87,19 +92,45 @@ void dibujar_cubo(){
     glPopMatrix();
 }
 
+
+
+
+
+//Dibujar los ejes de plano
+void dibujarEjes(){
+    glPushMatrix();
+    glBegin(GL_LINES);
+    glColor3f(1,0,0);
+    glVertex3f(0,0,0);
+    glVertex3f(10,0,0);
+    glColor3f(0,1,0);
+    glVertex3f(0,0,0);
+    glVertex3f(0,10,0);
+    glColor3f(0,0,1);
+    glVertex3f(0,0,0);
+    glVertex3f(0,0,10);
+    glEnd();
+    glPopMatrix();
+    
+}
+
+
 //Funcion que dibuja la escena
-void drawScene() {
+void dibujar_escena() {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
     gluLookAt(0.0, 0.0, 85.0, 0.0, 0.0, -100.0, 0.0, 1.0, 0.0);
-    
+    glRotatef(rotacion_x,1,0,0);  
+    glRotatef(rotacion_y,0,1,0);  
+    dibujarEjes(); 
     dibujar_esfera();
     dibujar_cubo();
     
 	glutSwapBuffers();
+
 }
 
 
@@ -110,21 +141,28 @@ int main(int argc, char* argv[]) {
     glutInitWindowPosition (400, 50);
     glutCreateWindow ("Tron");    
 	initRendering(); 
-
+/*
     const char *filename = argv[1];
-    Trimesh *themesh = Trimesh::read(filename);
-    if(!themesh)
-        usage(argv[0]);
-    
-    
+    TriMesh *themesh = TriMesh::read(filename);
+    //if(!themesh)
+      //  usage(argv[0]);
 
-    glutDisplayFunc(drawScene);
-	glutKeyboardFunc(manejador_teclas);
-    glutSpecialFunc(direccionales);
-	glutReshapeFunc(handleResize);
 
-   // glutTimerFunc(10,dibujar_esfera,1);
+    themesh->need_normals();
+    themesh->need_tstrips();
+    themesh->need_bsphere();
+    meshes.push_back(themesh);
+    xforms.push_back(xform());
+    visible.push_back(true);
+    filenames.push_back(filename); 
+*/
+
+    glutDisplayFunc(dibujar_escena);
 	
+    glutKeyboardFunc(manejador_teclas);
+    glutSpecialFunc(move_cam);
+	glutReshapeFunc(handleResize);
+//    glutTimerFunc(10,move_cam,1);
     glutMainLoop(); 
 	return 0;
 }
