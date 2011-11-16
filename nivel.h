@@ -13,6 +13,12 @@ typedef struct{
     ~oponentes(){delete[] points;}
 }oponentes;
 
+typedef struct{
+    punto v;
+    int rebotes;
+    punto pos;
+}disco;
+
 typedef struct {
     int level_id;
     int game_time;
