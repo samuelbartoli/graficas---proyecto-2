@@ -1,4 +1,12 @@
 Autores: Samuel Bartoli 07-40632
          Nestor Manrique 07-41150
 
+Falta:
+ - Parser
+ - Dibujar tablero
+ - dibujar objetos .ply y al jugador.
+ - movimientos de los contrincantes y jugador (mapear poligono al tablero).
+ - colisiones.
+ - en el struc objecto, en vez de cargar el archivo, cargamos la malla
+
 
