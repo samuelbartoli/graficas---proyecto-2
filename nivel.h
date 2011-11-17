@@ -32,6 +32,7 @@ typedef struct{
 typedef struct obstaculos{
     int tipo;
    //Trimesh mesh;
+    int nro_obstaculos;
     punto points;
 }obstaculos;
 
