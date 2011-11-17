@@ -12,10 +12,7 @@
 using namespace rapidxml;
 using namespace std;
 
-//Crear el vector de niveles
-vector<nivel> niveles;
-
-void ParserFile(char *filename){
+void ParserFile(char *filename, vector<nivel> * niveles){
 
     int i;
     string input_xml;
@@ -74,14 +71,12 @@ void ParserFile(char *filename){
         int ncontrincantes = atoi(nodocon->value());
         nodocon = nodo->first_node("contrincante");
         
-        if(ncontrincantes > 0){
+        cn.nro_jugadores = ncontrincantes + 1;
         //recorremos los contrincantes
         for(int k = 1; k <= ncontrincantes ; k ++ , nodocon = nodocon->next_sibling("contrincante")){
             puntos = atoi(nodocon->first_node("trayectoria")->first_node("puntos")->value());
-            jugadores cont(puntos);
             //Creamos el contrincante
-//            jugadores cont(puntos);
-            //Puntos del contrincante
+            jugadores cont(puntos);
         
             cont.shot_v = atof(nodocon->first_node("disparo")->value());
             cont.trayec_v = atof(nodocon->first_node("trayectoria")->first_node("velocidad")->value());
@@ -96,7 +91,6 @@ void ParserFile(char *filename){
         
             cn.player[k] = cont ; 
         }
-        }
 
         //OBJETOS
         xml_node<> *objetos ;
@@ -105,7 +99,6 @@ void ParserFile(char *filename){
         int nobjetos = atoi(objetos->first_node("cantidad")->value());
         
        // printf("hay %d objetos\n", nobjetos);
-        
         objetos = objetos->first_node("objeto");
 
         for(int j = 0; j < nobjetos ; j++ , objetos = objetos->next_sibling("objeto")){
@@ -113,7 +106,6 @@ void ParserFile(char *filename){
             
 //            obstaculos obs ; 
             obstaculos obs ;
-            obs.nro_obstaculos = nobjetos ;
  
             if(!tipo.compare("maya")){
                 obs.tipo = 0 ;     
@@ -138,19 +130,15 @@ void ParserFile(char *filename){
         }
    
         //Insertamos el nivel en el vector de niveles 
-        niveles.push_back(cn);   
+        niveles->push_back(cn);   
     }
 
 }
 
-
+/*
 void print_obstaculos(obstaculos m){
-        printf("\n\ttipo: %d", m.tipo);
-        
-       // for(int j = 0; j < m.nro_obstaculos ; j++)
-         //  printf("x: %f y: %f \n", m.points[j].x , m.points[j].y);
-
-    printf("\n");
+        printf("\n\ttipo: %d\n", m.tipo);
+        printf("x: %f y: %f \n", m.points.x , m.points.y);
 }   
 
 void print_contrincantes(jugadores m){
@@ -175,34 +163,33 @@ void print_nivel(vector<nivel> l){
     for(int i = 0 ; i < l.size() ; i++){
         printf("\nnivel id: %d\n", l[i].level_id);
         printf("game time: %d\n", l[i].game_time);
+        printf("nro jugadores: %d\n", l[i].nro_jugadores);
         
         printf("--- JUGADOR\n");
         print_jugador(l[i].player[0]);
 
         int j = 1;
         printf("\t--- CONTRINCANTES \n");
-        while(l[i].player[j].nro_puntos > 0){
+        for(int j = 1; j < l[i].nro_jugadores; j++ ){
             printf("el contrincante %d tiene %d puntos \n", j,(int) l[i].player[j].nro_puntos);
             print_contrincantes(l[i].player[j]);
-            j++;
         }
 
         printf("\t--- OBSTACULOS: %d\n",(int) l[i].objs.size());
-        //for(int k = 0; k < (int)l[i].objs.size() ; i++){
-        //    print_obstaculos(l[i].objs.[k]);
-
+        for(int k = 0; k < (int)l[i].objs.size() ; k++){
+            print_obstaculos(l[i].objs[k]);
         }
+    }
 }
 
-
 int main (int argc, char * argv[]){
-    
-    ParserFile("config2.xml");
+
+    vector<nivel> niveles;   
+
+    ParserFile("config2.xml",&niveles);
     int tamano = niveles.size();
 
     print_nivel(niveles);
-
-    
-
 }
+*/
 
