@@ -1,7 +1,7 @@
 CC = g++ 
 PROG =  tron
 
-LIBS = -Itrimesh2/include -Ltrimesh2/lib.Linux64 
+LIBS = -Itrimesh/include -Ltrimesh/lib.Linux64 
 LDLIBS = -lglut -lGL -lGLU -lX11 -lm -ltrimesh -ljpeg -L"/usr/X11R6/lib"
 
 $(PROG): tron.cpp 
