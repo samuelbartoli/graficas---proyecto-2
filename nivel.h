@@ -1,5 +1,7 @@
 #include <vector>
 
+using namespace std;
+
 typedef struct {
     float x;
     float y;
@@ -32,13 +34,13 @@ typedef struct{
 typedef struct obstaculos{
     int tipo;
    //Trimesh mesh;
-    int nro_obstaculos;
     punto points;
 }obstaculos;
 
 typedef struct nivel{
     int level_id;
     int game_time;
+    int nro_jugadores;
     jugadores player[4];
     std::vector<obstaculos> objs ;  
    
@@ -46,9 +48,13 @@ typedef struct nivel{
     nivel(const nivel &A){
         level_id = A.level_id;
         game_time = A.game_time;
+        nro_jugadores = A.nro_jugadores;
         memcpy(player, A.player, sizeof(jugadores)*4);
         objs = A.objs ;
     }
-    nivel(){}
+    nivel(){memset(player,0,sizeof(jugadores)*4);}
     
 }nivel;
+
+void ParserFile(char *, vector<nivel> *);
+void print_nivel(vector<nivel>);
