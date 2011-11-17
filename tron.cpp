@@ -6,7 +6,6 @@
 //#include "TriMesh.h"
 //#include "XForm.h"
 #include <vector>
-#include <list>
 #include "nivel.h"
 
 #define SQR(a) (a*a)
@@ -27,8 +26,7 @@ punto discos[4];
 punto jugadores[4];
 punto obj[4];
 
-list<nivel> niveles;
-nivel level;
+vector<nivel> niveles;
 
 /*vector<TriMesh *> meshes;
 vector<xform> xforms;
@@ -38,6 +36,23 @@ vector<string> filenames;*/
 //rotacion_x = 0 ;
 //rotacion_y = 0;
 
+//Maneja el reescalamiento de la ventana
+void handleResize(int w, int h){
+	glViewport(0, 0, w, h);
+	glMatrixMode(GL_PROJECTION); 
+	glLoadIdentity(); 
+	gluPerspective(45.0,(double)w / (double)h, 1.0, 200.0) ;
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+//Settea opciones de opengl
+void initRendering() {
+	glEnable(GL_DEPTH_TEST);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); 
+}
+
+//Manejador para la tecla Esc que cierra la ventana
 void manejador_teclas(unsigned char key, 
 					int x, int y) {
 	switch (key) {
@@ -45,6 +60,25 @@ void manejador_teclas(unsigned char key,
 			exit(0); 
     }
 }   
+
+//mover camara
+void move_cam(int key, int x, int y){
+    switch(key) {
+        case GLUT_KEY_RIGHT:
+            rotacion_y += 2 ;
+            break;
+        case GLUT_KEY_LEFT:
+            rotacion_y -= 2;
+            break;
+        case GLUT_KEY_UP:
+            rotacion_x += 2;
+            break;
+        case GLUT_KEY_DOWN:
+            rotacion_x -= 2;
+            break;
+    }  
+    glutPostRedisplay();
+}
 
 //Procesa el click del mouse
 void processMouse(int button, int state, int x, int y){
@@ -65,31 +99,6 @@ void processMouse(int button, int state, int x, int y){
         gluUnProject((double)xclick,(double)yclick,depth,mMat,pMat,viewport,&sx,&sy,&sz);
         printf("xclick=%lf, yclick=%lf, x=%lf, y=%lf, z=%lf \n",xclick,yclick,sx,sy,sz);
     }
-}
-
-//mover camara
-void move_cam(int key, int x, int y){
-    switch(key) {
-        case GLUT_KEY_RIGHT:
-            rotacion_y += 2 ;
-            break;
-        case GLUT_KEY_LEFT:
-            rotacion_y -= 2;
-            break;
-        case GLUT_KEY_UP:
-            rotacion_x += 2;
-            break;
-        case GLUT_KEY_DOWN:
-            rotacion_x -= 2;
-            break;
-    }  
-    glutPostRedisplay();
-
-}
-
-void initRendering() {
-	glEnable(GL_DEPTH_TEST);
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); 
 }
 
 // Dibuja un cuadrado con los tamanos tamx, tamy , tamz 
@@ -176,6 +185,7 @@ void dibujararista(float tamx, float tamy, float tamz, float r, float g, float b
 
 }
 
+//Dibuja las aristas del poligono segun el orden de los puntos en "puntos"
 void dibujarpoligono(int tam, float puntos[][2], float r, float g, float b){
     glPushMatrix();
     glLineWidth(1.5);
@@ -205,14 +215,6 @@ void dibujarArena(){
     glPopMatrix();
 }
 
-void handleResize(int w, int h){
-	glViewport(0, 0, w, h);
-	glMatrixMode(GL_PROJECTION); 
-	glLoadIdentity(); 
-	gluPerspective(45.0,(double)w / (double)h, 1.0, 200.0) ;
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-}
 
 //dibuja una esfera
 void dibujar_esfera(){
@@ -256,28 +258,7 @@ void dibujarEjes(){
 
 float puntos[4][2] = {{0,0},{20,82},{65,30},{70,79}};
 
-//Funcion que dibuja la escena
-void dibujar_escena() {
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    
-    gluLookAt(0.0, 0.0, 130.0, 0.0, 0.0, -100.0, 0.0, 1.0, 0.0);
-    glRotatef(rotacion_x,1,0,0);  
-    glRotatef(rotacion_y,0,1,0);  
-    //dibujar_esfera();
-    dibujar_cubo();
-    dibujarEjes();
-    glPushMatrix();
-        glTranslatef(-50,0,-50);
-        dibujarpoligono(4,puntos,1,0,0);
-    glPopMatrix();
-    
-    dibujarArena();
-	glutSwapBuffers();
-
-}
 
 void iniciodenivel(){
     //Cargar el nivel
@@ -350,6 +331,29 @@ void update(){
     //Mover discos
     //Chequeo el tiempo del nivel
     //Chequear colisiones
+}
+
+//Funcion que dibuja la escena
+void dibujar_escena() {
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    gluLookAt(0.0, 0.0, 130.0, 0.0, 0.0, -100.0, 0.0, 1.0, 0.0);
+    glRotatef(rotacion_x,1,0,0);  
+    glRotatef(rotacion_y,0,1,0);  
+    //dibujar_esfera();
+    dibujar_cubo();
+    dibujarEjes();
+    glPushMatrix();
+        glTranslatef(-50,0,-50);
+        dibujarpoligono(4,puntos,1,0,0);
+    glPopMatrix();
+    
+    dibujarArena();
+	glutSwapBuffers();
+
 }
 
 int main(int argc, char* argv[]) {
