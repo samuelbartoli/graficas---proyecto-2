@@ -54,8 +54,8 @@ void ParserFile(char *filename, vector<nivel> * niveles){
 
         for(int j = 0; j < puntos && nodopuntos ; j++){
             (jugador.points[j]).x = atof(nodopuntos->first_node("x")->value());
-            (jugador.points[j]).y = atof(nodopuntos->first_node("y")->value());
-            //printf("x: %f y: %f\n", jugador.points->x, jugador.points->y);
+            (jugador.points[j]).z = atof(nodopuntos->first_node("y")->value());
+            //printf("x: %f y: %f\n", jugador.points->x, jugador.points->z);
             nodopuntos = nodopuntos->next_sibling("punto");
             
         }  
@@ -85,7 +85,7 @@ void ParserFile(char *filename, vector<nivel> * niveles){
             //recorremos los puntos
             for(int l = 0; l < puntos && nodopuntos ; l++){
                 (cont.points[l]).x = atof(nodopuntos->first_node("x")->value());
-                (cont.points[l]).y = atof(nodopuntos->first_node("y")->value());
+                (cont.points[l]).z = atof(nodopuntos->first_node("y")->value());
                 nodopuntos = nodopuntos->next_sibling("punto");
             }
         
@@ -104,28 +104,22 @@ void ParserFile(char *filename, vector<nivel> * niveles){
         for(int j = 0; j < nobjetos ; j++ , objetos = objetos->next_sibling("objeto")){
             string tipo = objetos->first_node()->name();
             
-//            obstaculos obs ; 
             obstaculos obs ;
  
             if(!tipo.compare("maya")){
                 obs.tipo = 0 ;     
-                obs.points.x = atof(objetos->first_node()->first_node("x")->value());      
-                obs.points.y = atof(objetos->first_node()->first_node("y")->value());      
-         //       printf("x: %f y: %f\n", obs.points.x, obs.points.y);
             }else if (!tipo.compare("cubo")){
                 obs.tipo = 1;    
-                obs.points.x = atof(objetos->first_node()->first_node("x")->value());      
-                obs.points.y = atof(objetos->first_node()->first_node("y")->value());      
-           //     printf("x: %f y: %f\n", obs.points.x, obs.points.y);
             }else{
                 obs.tipo = 2;    
-                obs.points.x = atof(objetos->first_node()->first_node("x")->value());      
-                obs.points.y = atof(objetos->first_node()->first_node("y")->value());      
-        //        printf("x: %f y: %f\n", obs.points.x, obs.points.y);
-
             }
-        //Insertar el obstaculo en el vector de obstaculos
-        (cn.objs).push_back(obs);
+
+            obs.points.x = atof(objetos->first_node()->first_node("x")->value());      
+            obs.points.z = atof(objetos->first_node()->first_node("y")->value());
+            //printf("x: %f y: %f\n", obs.points.x, obs.points.z);
+
+            //Insertar el obstaculo en el vector de obstaculos
+            (cn.objs).push_back(obs);
  
         }
    
@@ -135,10 +129,9 @@ void ParserFile(char *filename, vector<nivel> * niveles){
 
 }
 
-/*
 void print_obstaculos(obstaculos m){
         printf("\n\ttipo: %d\n", m.tipo);
-        printf("x: %f y: %f \n", m.points.x , m.points.y);
+        printf("x: %f z: %f \n", m.points.x , m.points.z);
 }   
 
 void print_contrincantes(jugadores m){
@@ -146,7 +139,7 @@ void print_contrincantes(jugadores m){
     printf("\tvelocidad de trayectoria %f\n", m.trayec_v );
 
     for(int i = 0; i < m.nro_puntos ; i++){
-        printf("\tx: %f y: %f \n", m.points[i].x , m.points[i].y);
+        printf("\tx: %f z: %f \n", m.points[i].x , m.points[i].z);
     }
 }
 
@@ -155,7 +148,7 @@ void print_jugador(jugadores m){
     printf("velocidad de trayectoria %f\n", m.trayec_v );
 
     for(int i = 0; i < m.nro_puntos ; i++){
-        printf("x: %f y: %f \n", m.points[i].x , m.points[i].y);
+        printf("x: %f z: %f \n", m.points[i].x , m.points[i].z);
     }
 }
 
@@ -182,6 +175,7 @@ void print_nivel(vector<nivel> l){
     }
 }
 
+/*
 int main (int argc, char * argv[]){
 
     vector<nivel> niveles;   

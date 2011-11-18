@@ -2,16 +2,31 @@
 
 using namespace std;
 
-typedef struct {
+typedef struct{
     float x;
     float y;
     float z;
 }punto;
 
+typedef struct{
+    punto pos;
+    punto v;
+    int rebotes;
+}disco;
+
+typedef struct obstaculos{
+    int tipo;
+   //Trimesh mesh;
+    punto points;
+}obstaculos;
+
 typedef struct jugadores{
     float shot_v;
     float trayec_v;
     int nro_puntos;
+    punto ptoact;
+    int ptosig;
+    float timer;
     punto points[100];
 
     public:
@@ -21,21 +36,12 @@ typedef struct jugadores{
         shot_v = A.shot_v;
         trayec_v = A.trayec_v;
         nro_puntos = A.nro_puntos;
+        ptoact = A.ptoact;
+        ptosig = A.ptosig;
+        timer = A.timer;
         memcpy(points,A.points,sizeof(punto)*A.nro_puntos);
      }
 }jugadores;
-
-typedef struct{
-    punto v;
-    int rebotes;
-    punto pos;
-}disco;
-
-typedef struct obstaculos{
-    int tipo;
-   //Trimesh mesh;
-    punto points;
-}obstaculos;
 
 typedef struct nivel{
     int level_id;
@@ -52,7 +58,9 @@ typedef struct nivel{
         memcpy(player, A.player, sizeof(jugadores)*4);
         objs = A.objs ;
     }
-    nivel(){memset(player,0,sizeof(jugadores)*4);}
+    nivel(){
+        level_id=0;
+        memset(player,0,sizeof(jugadores)*4);}
     
 }nivel;
 

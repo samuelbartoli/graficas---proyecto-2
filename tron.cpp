@@ -22,11 +22,11 @@ int rotacion_x = 0;
 int rotacion_y = 0;
 
 double sx,sy,sz;
-punto discos[4];
-punto jugadores[4];
-punto obj[4];
-
 vector<nivel> niveles;
+nivel lvlactual;
+int vidas,puntaje,enemies;
+int init=0;
+double lvltime;
 
 /*vector<TriMesh *> meshes;
 vector<xform> xforms;
@@ -48,8 +48,14 @@ void handleResize(int w, int h){
 
 //Settea opciones de opengl
 void initRendering() {
+    glutInitWindowSize (800, 500); 
+    glutInitWindowPosition (400, 50);
+    glutCreateWindow ("Tron");    
 	glEnable(GL_DEPTH_TEST);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable( GL_BLEND );
+    glClearColor(0.0,0.0,0.0,0.0);
 }
 
 //Manejador para la tecla Esc que cierra la ventana
@@ -185,19 +191,6 @@ void dibujararista(float tamx, float tamy, float tamz, float r, float g, float b
 
 }
 
-//Dibuja las aristas del poligono segun el orden de los puntos en "puntos"
-void dibujarpoligono(int tam, float puntos[][2], float r, float g, float b){
-    glPushMatrix();
-    glLineWidth(1.5);
-    glColor3f(r,g,b);
-    glBegin(GL_LINE_LOOP);
-        for(int i=0;i<tam;i++){
-            glVertex3f(puntos[i][0],2.5,puntos[i][1]);
-        }
-    glEnd();
-    glPopMatrix();
-}
-
 //Dibuja el area de juego
 void dibujarArena(){
     glPushMatrix();
@@ -258,16 +251,16 @@ void dibujarEjes(){
 
 float puntos[4][2] = {{0,0},{20,82},{65,30},{70,79}};
 
-
-
-void iniciodenivel(){
-    //Cargar el nivel
-        //Cargar las figuras
-        //Dibujar el polígono de trayectoria
-        //Inicializar las vidas
-        //Inicializar el puntaje
-        //Inicializar el tiempo del nivel
-        //Inicializar el Contador de enemigos
+//Dibuja las aristas del poligono segun el orden de los puntos en "puntos"
+void dibujarpoligono(int tam, float puntos[][2]){
+    glPushMatrix();
+    glLineWidth(1.5);
+    glBegin(GL_LINE_LOOP);
+        for(int i=0;i<tam;i++){
+            glVertex3f(puntos[i][0],2.5,puntos[i][1]);
+        }
+    glEnd();
+    glPopMatrix();
 }
 
 void movimiento(double tiempo){
@@ -333,8 +326,29 @@ void update(){
     //Chequear colisiones
 }
 
+void iniciodenivel(){
+    //Cargar el nivel
+    lvlactual=niveles[lvlactual.level_id+1];
+    //Cargar los jugadores
+    for(int i=0; i<lvlactual.nro_jugadores; i++){
+        lvlactual.player[i].ptoactual = lvlactual.player[i].points[0];
+        lvlactual.player[i].ptosig = 1;
+        lvlactual.player[i].timer = 0;
+    }
+    //Inicializar las vidas
+        vidas = 3;
+    //Inicializar el puntaje
+        puntaje = 0;
+    //Inicializar el tiempo del nivel
+        lvltime = lvlactual.game_time;
+    //Inicializar el Contador de enemigos
+        enemies = lvlactual.nro_jugadores-1;
+
+    glutPostRedisplay(); 
+}
+
 //Funcion que dibuja la escena
-void dibujar_escena() {
+void dibujar_escena(){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
@@ -343,30 +357,82 @@ void dibujar_escena() {
     gluLookAt(0.0, 0.0, 130.0, 0.0, 0.0, -100.0, 0.0, 1.0, 0.0);
     glRotatef(rotacion_x,1,0,0);  
     glRotatef(rotacion_y,0,1,0);  
-    //dibujar_esfera();
-    dibujar_cubo();
+
+    //Inicializar
+    if(init){
+        iniciodenivel();
+    }
+
+    //Dibujar Personajes
+    punto dib;
+    for(int i=0; i < lvlactual.nro_jugadores; i++){
+
+        glPushMatrix();
+            switch(i){
+                case 0:
+                    glColor3f(0,0,1);
+                    break;
+                case 1:
+                    glColor3f(1,0,0);
+                    break;
+                case 2:
+                    glColor3f(0,1,0);
+                    break;
+                case 3:
+                    glColor3f(1,0.6,0);
+                    break;
+            }
+
+            dibujarpoligono(lvlactual.player[i].nro_puntos, lvlactual.player[i].points);
+
+            dib = lvlactual.player[i].ptoactual;
+            glPushMatrix();
+                glTranslatef(dib.x,dib.y,dib.z);
+                //Aqui se carga la maya
+                dibujar_cubo();
+            glPopMatrix();
+            
+        glPopMatrix();
+    }
+
+    //Dibujar Obstaculos
+    for(int i=0; i < lvlactual.objs.size(); i++){
+        dib = lvlactual.objs[i].points;
+        glPushMatrix();
+            if(lvlactual.objs[i].tipo == 0){
+                //Cargar la malla del obstaculo
+                glColor3f(0,1,0);
+                dibujar_cubo();
+            }else if(lvlactual.objs[i].tipo == 1){
+                dibujar_cubo();
+            }else if(lvlactual.objs[i].tipo == 2){
+                dibujar_esfera();
+            }
+        glPopMatrix();
+    }
+
+    //Dibujar Discos
+    for(){
+
+    }
+
     dibujarEjes();
-    glPushMatrix();
-        glTranslatef(-50,0,-50);
-        dibujarpoligono(4,puntos,1,0,0);
-    glPopMatrix();
     
+    //Dibujar el Tablero
     dibujarArena();
 	glutSwapBuffers();
-
 }
 
 int main(int argc, char* argv[]) {
 
+    if(argc<2){
+        printf("No se especifico ningun archivo de configuracion\nUso: .\\tron <archivo de configuracion>\n");
+        exit(0);
+    }
+
+    ParserFile(argv[1],niveles);
     glutInit(&argc,argv);
-    glutInitWindowSize (800, 500); 
-    glutInitWindowPosition (400, 50);
-    glutCreateWindow ("Tron");    
 	initRendering();
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable( GL_BLEND );
-    glClearColor(0.0,0.0,0.0,0.0);
- 
 /*
     const char *filename = argv[1];
     TriMesh *themesh = TriMesh::read(filename);
@@ -382,17 +448,14 @@ int main(int argc, char* argv[]) {
     visible.push_back(true);
     filenames.push_back(filename); 
 */
-
     glutDisplayFunc(dibujar_escena);
-	
     glutKeyboardFunc(manejador_teclas);
     glutSpecialFunc(move_cam);
 	glutReshapeFunc(handleResize);
     glutMouseFunc(processMouse);
-    
-//    glutTimerFunc(tiempodelnivel,timernivel,1);
 
-//    glutTimerFunc(10,move_cam,1);
+    iniciodenivel();
+    glutTimerFunc(25,update,1);
     glutMainLoop(); 
 	return 0;
 }
